@@ -5,4 +5,4 @@ dependencies:
     - pandas=0.19.2
     - xlrd=1.0.0
     - pip:
-        - git+https://github.com/jcrudy/clinvoc.git@69ac7d8e5a22aac6f591082ff69027088ec51619
+        - git+https://github.com/jcrudy/clinvoc.git@86acb4a12ca9d5de893e7f7bf7ab0405eaedf9c7
