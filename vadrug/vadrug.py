@@ -2,34 +2,41 @@ import pandas
 import os
 from .resources import resources
 from clinvoc.ndc import NDC
+import pickle
 
 def _process_drug_file():
-    ndf = pandas.read_excel(os.path.join(resources, 'NDF_January_2016.xlsx'), sheetname='Sheet1', )
-    vocab = NDC()
-    va_class = {}
-    for _, row in ndf.iterrows():
-        # Some rows are malformed.  Correct them.
-        if '^' in str(row['NDC_1']):
-            row_list= list(row)
-            assert row['NDC_1'] == row_list[0]
-            row_ = pandas.Series((row_list[0].split('^') + row_list[1:])[:len(row_list)], index=row.index)
-        else:
-            row_ = row
-        
-        cls = row_['VA_CLASS']
-        ndc = vocab.standardize(str(int(row_['NDF_NDC'])))
-        
-        if cls in va_class:
-            va_class[cls].add(ndc)
-        else:
-            va_class[cls] = {ndc}
+    try:
+        with open(os.path.join(resources, 'cache.pickle'), 'rb') as infile:
+            return pickle.load(infile)
+    except:
+        ndf = pandas.read_excel(os.path.join(resources, 'NDF_January_2016.xlsx'), sheetname='Sheet1', )
+        vocab = NDC()
+        va_class = {}
+        for _, row in ndf.iterrows():
+            # Some rows are malformed.  Correct them.
+            if '^' in str(row['NDC_1']):
+                row_list= list(row)
+                assert row['NDC_1'] == row_list[0]
+                row_ = pandas.Series((row_list[0].split('^') + row_list[1:])[:len(row_list)], index=row.index)
+            else:
+                row_ = row
             
-    # Don't need the special case because not attempting to map between "classes" and "categories"
-#     # Correct one special case
-#     va_class['NONSALICYLATE NSAIDs,ANTIRHEUMATIC'] = va_class['NONSALICYLATE NSAIS,ANTIRHEUMATIC']
-#     del va_class['NONSALICYLATE NSAIS,ANTIRHEUMATIC']
-#         
-    return va_class
+            cls = row_['VA_CLASS']
+            ndc = vocab.standardize(str(int(row_['NDF_NDC'])))
+            
+            if cls in va_class:
+                va_class[cls].add(ndc)
+            else:
+                va_class[cls] = {ndc}
+                
+        # Don't need the special case because not attempting to map between "classes" and "categories"
+    #     # Correct one special case
+    #     va_class['NONSALICYLATE NSAIDs,ANTIRHEUMATIC'] = va_class['NONSALICYLATE NSAIS,ANTIRHEUMATIC']
+    #     del va_class['NONSALICYLATE NSAIS,ANTIRHEUMATIC']
+    #         
+        with open(os.path.join(resources, 'cache.pickle'), 'wb') as outfile:
+            pickle.dump(va_class, outfile)
+        return va_class
 
 # Not attempting to map between "classes" and "categories" because, upon inspection, there are repeats in both columns
 # of the mapping file.  Perhaps these can be dealt with later.
