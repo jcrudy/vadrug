@@ -3,6 +3,8 @@ import os
 from .resources import resources
 from clinvoc.ndc import NDC
 import pickle
+from clinvoc.code_collections import codecoll
+from clinvoc.base import left_pad
 
 def _process_drug_file():
     try:
@@ -22,12 +24,12 @@ def _process_drug_file():
                 row_ = row
             
             cls = row_['VA_CLASS']
-            ndc = vocab.standardize(str(int(row_['NDF_NDC'])))
+            ndc = vocab.standardize(left_pad('%.11s' % int(row_['NDF_NDC']), 11))
             
             if cls in va_class:
-                va_class[cls].add(ndc)
+                va_class[(cls, vocab.vocab_name)].add(ndc)
             else:
-                va_class[cls] = {ndc}
+                va_class[(cls, vocab.vocab_name)] = {ndc}
                 
         # Don't need the special case because not attempting to map between "classes" and "categories"
     #     # Correct one special case
@@ -51,7 +53,9 @@ def _process_drug_file():
 #     
 #     return category_to_class, class_to_category
 #     
-categories = _process_drug_file()
+VADrugCollection = codecoll('vadrug', ['category', 'vocabulary'])
+_code_sets = _process_drug_file()
+code_sets = VADrugCollection(*_code_sets.items())
 # category_to_class, class_to_category = _process_class_file()
 # classes = {category_to_class[k]:v for k, v in categories.items()}
 

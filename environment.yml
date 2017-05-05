@@ -5,4 +5,6 @@ dependencies:
     - pandas=0.19.2
     - xlrd=1.0.0
     - pip:
-        - git+https://github.com/jcrudy/clinvoc.git@86acb4a12ca9d5de893e7f7bf7ab0405eaedf9c7
+        - pyparsing==2.2.0
+        - toolz==0.8.2
+        - git+https://github.com/jcrudy/clinvoc.git@18863293c528691b2c0be8ec500cb4b1f6695617
