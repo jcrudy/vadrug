@@ -3,7 +3,7 @@ import os
 from .resources import resources
 from clinvoc.ndc import NDC
 import pickle
-from clinvoc.code_collections import codecoll
+from clinvoc.code_collections import CodeCollection
 from clinvoc.base import left_pad
 
 def _process_drug_file():
@@ -53,9 +53,8 @@ def _process_drug_file():
 #     
 #     return category_to_class, class_to_category
 #     
-VADrugCollection = codecoll('vadrug', ['category', 'vocabulary'])
 _code_sets = _process_drug_file()
-code_sets = VADrugCollection(*_code_sets.items())
+code_sets = CodeCollection(*_code_sets.items(), name='vadrug', levels=['category', 'vocabulary'])
 # category_to_class, class_to_category = _process_class_file()
 # classes = {category_to_class[k]:v for k, v in categories.items()}
 
