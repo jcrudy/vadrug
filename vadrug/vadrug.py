@@ -31,10 +31,10 @@ def _process_drug_file():
             cls = row_['VA_CLASS']
             ndc = vocab.standardize(left_pad('%.11s' % int(row_['NDF_NDC']), 11))
             
-            if (cls, vocab.vocab_name) in va_class:
-                va_class[(cls, vocab.vocab_name)].add(ndc)
+            if (cls, vocab) in va_class:
+                va_class[(cls, vocab)].add(ndc)
             else:
-                va_class[(cls, vocab.vocab_name)] = {ndc}
+                va_class[(cls, vocab)] = {ndc}
                 
         # Don't need the special case because not attempting to map between "classes" and "categories"
     #     # Correct one special case
