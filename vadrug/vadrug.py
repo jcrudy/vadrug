@@ -31,10 +31,10 @@ def _process_drug_file():
             cls = row_['VA_CLASS']
             ndc = vocab.standardize(left_pad('%.11s' % int(row_['NDF_NDC']), 11))
             
-            if (cls, vocab) in va_class:
-                va_class[(cls, vocab)].add(ndc)
+            if (cls, vocab.vocab_name, vocab.vocab_domain) in va_class:
+                va_class[(cls, vocab.vocab_domain, vocab.vocab_name)].add(ndc)
             else:
-                va_class[(cls, vocab)] = {ndc}
+                va_class[(cls, vocab.vocab_domain, vocab.vocab_name)] = {ndc}
                 
         # Don't need the special case because not attempting to map between "classes" and "categories"
     #     # Correct one special case
@@ -58,8 +58,8 @@ def _process_drug_file():
 #     
 #     return category_to_class, class_to_category
 #     
-_code_sets = _process_drug_file()
-code_sets = CodeCollection(*_code_sets.items(), name='vadrug', levels=['category', 'vocabulary'])
+""
+code_sets = CodeCollection(*_process_drug_file().items(), name='vadrug', levels=['category', 'domain', 'vocabulary'])
 # category_to_class, class_to_category = _process_class_file()
 # classes = {category_to_class[k]:v for k, v in categories.items()}
 

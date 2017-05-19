@@ -3,10 +3,11 @@ from nose.tools import assert_equal
 
 
 def test_vadrug():
-    for (catname, vocabname), codes in code_sets.collectlevels().items():
+    for (catname, vocabdomain, vocabname), codes in code_sets.collectlevels().items():
         assert type(codes) is set
         assert isinstance(catname, basestring)
         assert_equal(vocabname, 'NDC')
+        assert_equal(vocabdomain, 'RX')
 #         
 #         assert_equal(codes, classes[category_to_class[catname]])
 #         assert_equal(class_to_category[category_to_class[catname]], catname)
