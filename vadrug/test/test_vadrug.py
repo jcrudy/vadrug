@@ -1,11 +1,12 @@
 from vadrug.vadrug import code_sets#, classes, category_to_class, class_to_category
 from nose.tools import assert_equal
+from six import string_types
 
 
 def test_vadrug():
     for (catname, vocabdomain, vocabname), codes in code_sets.collectlevels().items():
         assert type(codes) is set
-        assert isinstance(catname, basestring)
+        assert isinstance(catname, string_types)
         assert_equal(vocabname, 'NDC')
         assert_equal(vocabdomain, 'RX')
 #         
